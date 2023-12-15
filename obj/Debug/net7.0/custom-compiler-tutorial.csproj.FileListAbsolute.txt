@@ -1,0 +1,15 @@
+C:\Users\seaba\Documents\Github\custom-compiler-tutorial\bin\Debug\net7.0\custom-compiler-tutorial.exe
+C:\Users\seaba\Documents\Github\custom-compiler-tutorial\bin\Debug\net7.0\custom-compiler-tutorial.deps.json
+C:\Users\seaba\Documents\Github\custom-compiler-tutorial\bin\Debug\net7.0\custom-compiler-tutorial.runtimeconfig.json
+C:\Users\seaba\Documents\Github\custom-compiler-tutorial\bin\Debug\net7.0\custom-compiler-tutorial.dll
+C:\Users\seaba\Documents\Github\custom-compiler-tutorial\bin\Debug\net7.0\custom-compiler-tutorial.pdb
+C:\Users\seaba\Documents\Github\custom-compiler-tutorial\obj\Debug\net7.0\custom-compiler-tutorial.csproj.AssemblyReference.cache
+C:\Users\seaba\Documents\Github\custom-compiler-tutorial\obj\Debug\net7.0\custom-compiler-tutorial.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\seaba\Documents\Github\custom-compiler-tutorial\obj\Debug\net7.0\custom-compiler-tutorial.AssemblyInfoInputs.cache
+C:\Users\seaba\Documents\Github\custom-compiler-tutorial\obj\Debug\net7.0\custom-compiler-tutorial.AssemblyInfo.cs
+C:\Users\seaba\Documents\Github\custom-compiler-tutorial\obj\Debug\net7.0\custom-compiler-tutorial.csproj.CoreCompileInputs.cache
+C:\Users\seaba\Documents\Github\custom-compiler-tutorial\obj\Debug\net7.0\custom-compiler-tutorial.dll
+C:\Users\seaba\Documents\Github\custom-compiler-tutorial\obj\Debug\net7.0\refint\custom-compiler-tutorial.dll
+C:\Users\seaba\Documents\Github\custom-compiler-tutorial\obj\Debug\net7.0\custom-compiler-tutorial.pdb
+C:\Users\seaba\Documents\Github\custom-compiler-tutorial\obj\Debug\net7.0\custom-compiler-tutorial.genruntimeconfig.cache
+C:\Users\seaba\Documents\Github\custom-compiler-tutorial\obj\Debug\net7.0\ref\custom-compiler-tutorial.dll
