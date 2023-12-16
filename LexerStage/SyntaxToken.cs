@@ -2,19 +2,19 @@
 
 namespace custom_compiler_tutorial.LexerStage
 {
-    public class SyntaxToken : SyntaxNode
+    public sealed class SyntaxToken : SyntaxNode
     {
         public override SyntaxKind Kind { get; }
-        public int position;
-        public string text;
-        public object value;
+        public int Position { get; }
+        public override string Text { get; }
+        public object Value { get; }
 
         public SyntaxToken(SyntaxKind kind, int position, string text, object value)
         {
-            this.Kind = kind;
-            this.position = position;
-            this.text = text;
-            this.value = value;
+            Kind = kind;
+            Position = position;
+            Text = text;
+            Value = value;
         }
 
         public override IEnumerable<SyntaxNode> GetChildren()

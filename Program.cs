@@ -1,12 +1,13 @@
-﻿using custom_compiler_tutorial.LexerStage;
+﻿using custom_compiler_tutorial.BindingStage;
+using custom_compiler_tutorial.LexerStage;
 using custom_compiler_tutorial.ParserStage;
 using custom_compiler_tutorial.SyntaxTreeStage;
 
 namespace custom_compiler_tutorial
 {
-    public class Program
+    public static class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
             bool showTree = false;
             while (true)
@@ -28,37 +29,29 @@ namespace custom_compiler_tutorial
                 }
 
                 SyntaxTree syntaxTree = SyntaxTree.Parse(line);
+                Binder binder = new();
+                BoundExpression boundExpression = binder.BindExpression(syntaxTree.Root);
 
-                ConsoleColor color = Console.ForegroundColor;
+                IReadOnlyList<string> diagnostics = syntaxTree.Diagnostics.Concat(binder.Diagnostics).ToArray();
+
                 if (showTree)
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     PrettyPrint(syntaxTree.Root);
-                    Console.ForegroundColor = color;
+                    Console.ResetColor();
                 }
 
-                if (syntaxTree.Diagnostics.Any())
+                if (diagnostics.Any())
                 {
                     Console.ForegroundColor = ConsoleColor.DarkRed;
-                    foreach (string diagnostic in syntaxTree.Diagnostics) Console.WriteLine(diagnostic);
-                    Console.ForegroundColor = color;
+                    foreach (string diagnostic in diagnostics) Console.WriteLine(diagnostic);
+                    Console.ResetColor();
                 }
                 else
                 {
-                    int result = new Evaluator(syntaxTree.Root).Evaluate();
+                    object result = new Evaluator(boundExpression).Evaluate();
                     Console.WriteLine(result);
                 }
-
-                // Shows what the lexer outputs
-                /*Lexer lexer = new(line);
-                while (true)
-                {
-                    SyntaxToken token = lexer.NextToken();
-                    if (token.Kind == SyntaxKind.EndOfFileToken) break;
-                    Console.Write($"{token.Kind}: '{token.text}'");
-                    if (token.value != null) Console.Write($" {token.value}");
-                    Console.WriteLine();
-                }*/
             }
         }
 
@@ -71,10 +64,10 @@ namespace custom_compiler_tutorial
             Console.Write(indent);
             Console.Write(isLast ? "└── " : "├── ");
             Console.Write(node.Kind);
-            if (node is SyntaxToken t && t.value != null)
+            if (node is SyntaxToken t && t.Value != null)
             {
                 Console.Write(" ");
-                Console.Write(t.value);
+                Console.Write(t.Value);
             }
             Console.WriteLine();
 

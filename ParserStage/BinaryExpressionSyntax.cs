@@ -5,6 +5,7 @@ namespace custom_compiler_tutorial.ParserStage
     sealed class BinaryExpressionSyntax : ExpressionSyntax
     {
         public override SyntaxKind Kind => SyntaxKind.BinaryExpression;
+        public override string Text => OperatorToken.Text;
         public ExpressionSyntax Left { get; }
         public SyntaxNode OperatorToken { get; }
         public ExpressionSyntax Right { get; }
