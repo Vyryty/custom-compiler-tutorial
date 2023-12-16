@@ -1,14 +1,17 @@
 ﻿using custom_compiler_tutorial.BindingStage;
+using custom_compiler_tutorial.CompilationStage;
 
 namespace custom_compiler_tutorial.SyntaxTreeStage
 {
     public class Evaluator
     {
         private readonly BoundExpression root;
+        private readonly Dictionary<VariableSymbol, object> variables;
 
-        public Evaluator(BoundExpression root)
+        public Evaluator(BoundExpression root, Dictionary<VariableSymbol, object> variables)
         {
             this.root = root;
+            this.variables = variables;
         }
 
         public object Evaluate()
@@ -19,6 +22,15 @@ namespace custom_compiler_tutorial.SyntaxTreeStage
         private object EvaluateExpression(BoundExpression node)
         {
             if (node is BoundLiteralExpression n) return n.Value;
+
+            if (node is BoundVariableExpression v) return variables[v.Variable];
+
+            if (node is BoundAssignmentExpression a)
+            {
+                object value = EvaluateExpression(a.Expression);
+                variables[a.Variable] = value;
+                return value;
+            }
 
             if (node is BoundUnaryExpression u)
             {

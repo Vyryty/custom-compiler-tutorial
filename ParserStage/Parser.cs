@@ -1,4 +1,5 @@
-﻿using custom_compiler_tutorial.LexerStage;
+﻿using custom_compiler_tutorial.CompilationStage;
+using custom_compiler_tutorial.LexerStage;
 using custom_compiler_tutorial.SyntaxTreeStage;
 
 namespace custom_compiler_tutorial.ParserStage
@@ -7,8 +8,8 @@ namespace custom_compiler_tutorial.ParserStage
     {
         private readonly SyntaxToken[] tokens;
         private int position = 0;
-        private List<string> diagnostics = new();
-        public IEnumerable<string> Diagnostics => diagnostics;
+        private DiagnosticBag diagnostics = new();
+        public DiagnosticBag Diagnostics => diagnostics;
 
         public Parser(string text)
         {
@@ -37,7 +38,7 @@ namespace custom_compiler_tutorial.ParserStage
         {
             if (Current.Kind == kind) return NextToken();
 
-            diagnostics.Add($"Error: Unexpected token <{Current.Kind}>, expected <{kind}>");
+            diagnostics.ReportUnexpectedToken(Current.Span, Current.Kind, kind);
             return new SyntaxToken(kind, Current.Position, null, null);
         }
 
@@ -49,14 +50,32 @@ namespace custom_compiler_tutorial.ParserStage
             return new SyntaxTree(diagnostics, expression, endOfFileToken);
         }
 
-        private ExpressionSyntax ParseExpression(int parentPrecedence = 0)
+        private ExpressionSyntax ParseExpression()
+        {
+            return ParseAssignmentExpression();
+        }
+
+        private ExpressionSyntax ParseAssignmentExpression()
+        {
+            if (Current.Kind == SyntaxKind.IdentifierToken && Peek(1).Kind == SyntaxKind.EqualsToken)
+            {
+                SyntaxToken identifierToken = NextToken();
+                SyntaxToken operatorToken = NextToken();
+                ExpressionSyntax right = ParseAssignmentExpression();
+                return new AssignmentExpressionSyntax(identifierToken, operatorToken, right);
+            }
+
+            return ParseBinaryExpression();
+        }
+
+        private ExpressionSyntax ParseBinaryExpression(int parentPrecedence = 0)
         {
             ExpressionSyntax left;
             int unaryOperatorPrecedence = Current.Kind.GetUnaryOperatorPrecedence();
             if (unaryOperatorPrecedence != 0 && unaryOperatorPrecedence >= parentPrecedence)
             {
                 SyntaxToken operatorToken = NextToken();
-                ExpressionSyntax operand = ParseExpression(unaryOperatorPrecedence);
+                ExpressionSyntax operand = ParseBinaryExpression(unaryOperatorPrecedence);
                 left = new UnaryExpressionSyntax(operatorToken, operand);
             }
             else
@@ -70,7 +89,7 @@ namespace custom_compiler_tutorial.ParserStage
                 if (precedence == 0 || precedence <= parentPrecedence) break;
 
                 SyntaxToken operatorToken = NextToken();
-                ExpressionSyntax right = ParseExpression(precedence);
+                ExpressionSyntax right = ParseBinaryExpression(precedence);
                 left = new BinaryExpressionSyntax(left, operatorToken, right);
             }
 
@@ -102,6 +121,12 @@ namespace custom_compiler_tutorial.ParserStage
                     SyntaxToken keywordToken = NextToken();
                     bool value = keywordToken.Kind == SyntaxKind.TrueKeyword;
                     return new LiteralExpressionSyntax(keywordToken, value);
+                }
+
+                case SyntaxKind.IdentifierToken:
+                {
+                    SyntaxToken identifierToken = NextToken();
+                    return new NameExpressionSyntax(identifierToken);
                 }
 
                 default:

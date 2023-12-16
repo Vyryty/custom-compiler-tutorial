@@ -7,7 +7,7 @@ namespace custom_compiler_tutorial.ParserStage
         public override SyntaxKind Kind => SyntaxKind.BinaryExpression;
         public override string Text => OperatorToken.Text;
         public ExpressionSyntax Left { get; }
-        public SyntaxNode OperatorToken { get; }
+        public SyntaxToken OperatorToken { get; }
         public ExpressionSyntax Right { get; }
 
         public BinaryExpressionSyntax(ExpressionSyntax left, SyntaxToken operatorToken, ExpressionSyntax right)

@@ -1,4 +1,5 @@
 ﻿using custom_compiler_tutorial.BindingStage;
+using custom_compiler_tutorial.CompilationStage;
 using custom_compiler_tutorial.LexerStage;
 using custom_compiler_tutorial.ParserStage;
 using custom_compiler_tutorial.SyntaxTreeStage;
@@ -10,6 +11,8 @@ namespace custom_compiler_tutorial
         private static void Main()
         {
             bool showTree = false;
+            Dictionary<VariableSymbol, object> variables = new();
+
             while (true)
             {
                 Console.Write("> ");
@@ -29,10 +32,10 @@ namespace custom_compiler_tutorial
                 }
 
                 SyntaxTree syntaxTree = SyntaxTree.Parse(line);
-                Binder binder = new();
-                BoundExpression boundExpression = binder.BindExpression(syntaxTree.Root);
+                Compilation compilation = new(syntaxTree);
+                EvaluationResult result = compilation.Evaluate(variables);
 
-                IReadOnlyList<string> diagnostics = syntaxTree.Diagnostics.Concat(binder.Diagnostics).ToArray();
+                IReadOnlyList<Diagnostic> diagnostics = result.Diagnostics;
 
                 if (showTree)
                 {
@@ -43,15 +46,29 @@ namespace custom_compiler_tutorial
 
                 if (diagnostics.Any())
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
-                    foreach (string diagnostic in diagnostics) Console.WriteLine(diagnostic);
-                    Console.ResetColor();
+                    foreach (Diagnostic diagnostic in diagnostics)
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.WriteLine(diagnostic);
+                        Console.ResetColor();
+
+                        string prefix = line[..diagnostic.Span.Start];
+                        string error = line.Substring(diagnostic.Span.Start, diagnostic.Span.Length);
+                        string suffix = line[diagnostic.Span.End..];
+
+                        Console.Write("    ");
+                        Console.Write(prefix);
+
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.Write(error);
+                        Console.ResetColor();
+
+                        Console.Write(suffix);
+
+                        Console.WriteLine("\n");
+                    }
                 }
-                else
-                {
-                    object result = new Evaluator(boundExpression).Evaluate();
-                    Console.WriteLine(result);
-                }
+                else Console.WriteLine(result.Value);
             }
         }
 
