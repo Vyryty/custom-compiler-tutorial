@@ -1,4 +1,5 @@
-﻿using custom_compiler_tutorial.LexerStage;
+﻿using custom_compiler_tutorial.CompilationStage;
+using custom_compiler_tutorial.LexerStage;
 using custom_compiler_tutorial.ParserStage;
 
 namespace custom_compiler_tutorial.SyntaxTreeStage
@@ -7,9 +8,9 @@ namespace custom_compiler_tutorial.SyntaxTreeStage
     {
         public ExpressionSyntax Root { get; }
         public SyntaxToken EndOfFileToken { get; }
-        public IReadOnlyList<string> Diagnostics { get; }
+        public IReadOnlyList<Diagnostic> Diagnostics { get; }
 
-        public SyntaxTree(IEnumerable<string> diagnostics, ExpressionSyntax root, SyntaxToken endOfFileToken)
+        public SyntaxTree(IEnumerable<Diagnostic> diagnostics, ExpressionSyntax root, SyntaxToken endOfFileToken)
         {
             Root = root;
             EndOfFileToken = endOfFileToken;

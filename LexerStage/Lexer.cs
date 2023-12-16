@@ -1,4 +1,5 @@
-﻿using custom_compiler_tutorial.ParserStage;
+﻿using custom_compiler_tutorial.CompilationStage;
+using custom_compiler_tutorial.ParserStage;
 
 namespace custom_compiler_tutorial.LexerStage
 {
@@ -6,8 +7,8 @@ namespace custom_compiler_tutorial.LexerStage
     {
         private readonly string text;
         private int position;
-        private List<string> diagnostics = new();
-        public IEnumerable<string> Diagnostics => diagnostics;
+        private DiagnosticBag diagnostics = new();
+        public DiagnosticBag Diagnostics => diagnostics;
 
         private char Current => Peek(0);
         private char Lookahead => Peek(1);
@@ -34,19 +35,19 @@ namespace custom_compiler_tutorial.LexerStage
         {
             if (Current == '\0') return new SyntaxToken(SyntaxKind.EndOfFileToken, position, "\0", null);
 
+            int start = position;
+
             if (char.IsDigit(Current))
             {
-                int start = position;
                 while (char.IsDigit(Current)) Next();
                 int length = position - start;
                 string text = this.text.Substring(start, length);
-                if (!int.TryParse(text, out int value)) diagnostics.Add($"ERROR: The number {text} is not a valid Int32");
+                if (!int.TryParse(text, out int value)) diagnostics.ReportInvalidNumber(new(start, length), text, typeof(int));
                 return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
             }
 
             if (char.IsWhiteSpace(Current))
             {
-                int start = position;
                 while (char.IsWhiteSpace(Current)) Next();
                 int length = position - start;
                 string text = this.text.Substring(start, length);
@@ -55,7 +56,6 @@ namespace custom_compiler_tutorial.LexerStage
 
             if (char.IsLetter(Current))
             {
-                int start = position;
                 while (char.IsLetter(Current)) Next();
                 int length = position - start;
                 string text = this.text.Substring(start, length);
@@ -79,20 +79,36 @@ namespace custom_compiler_tutorial.LexerStage
                     return new(SyntaxKind.CloseParenthesisToken, position++, ")", null);
 
                 case '!':
-                    if (Lookahead == '=') return new(SyntaxKind.BangEqualsToken, position += 2, "!=", null);
-                    return new(SyntaxKind.BangToken, position ++, "!", null);
+                    if (Lookahead == '=')
+                    {
+                        position += 2;
+                        return new(SyntaxKind.BangEqualsToken, start, "!=", null);
+                    }
+                    return new(SyntaxKind.BangToken, position++, "!", null);
                 case '&':
-                    if (Lookahead == '&') return new(SyntaxKind.AmpersandAmpersandToken, position += 2, "&&", null);
+                    if (Lookahead == '&')
+                    {
+                        position += 2;
+                        return new(SyntaxKind.AmpersandAmpersandToken, start, "&&", null);
+                    }
                     break;
                 case '|':
-                    if (Lookahead == '|') return new(SyntaxKind.PipePipeToken, position += 2, "||", null);
+                    if (Lookahead == '|')
+                    {
+                        position += 2;
+                        return new(SyntaxKind.PipePipeToken, start, "||", null);
+                    }
                     break;
                 case '=':
-                    if (Lookahead == '=') return new(SyntaxKind.EqualsEqualsToken, position += 2, "==", null);
-                    break;
+                    if (Lookahead == '=')
+                    {
+                        position += 2;
+                        return new(SyntaxKind.EqualsEqualsToken, start, "==", null);
+                    }
+                    return new(SyntaxKind.EqualsToken, position++, "=", null);
             }
 
-            diagnostics.Add($"ERROR: Bad character input '{Current}' at index {position}");
+            diagnostics.ReportBadCharacter(position, Current);
             return new SyntaxToken(SyntaxKind.BadToken, position++, text.Substring(position - 1, 1), null);
         }
     }

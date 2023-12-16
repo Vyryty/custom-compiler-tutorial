@@ -6,7 +6,7 @@ namespace custom_compiler_tutorial.ParserStage
     {
         public override SyntaxKind Kind => SyntaxKind.UnaryExpression;
         public override string Text => OperatorToken.Text;
-        public SyntaxNode OperatorToken { get; }
+        public SyntaxToken OperatorToken { get; }
         public ExpressionSyntax Operand { get; }
 
         public UnaryExpressionSyntax(SyntaxToken operatorToken, ExpressionSyntax operand)
