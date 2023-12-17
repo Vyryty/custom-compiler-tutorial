@@ -1,5 +1,4 @@
-﻿using custom_compiler_tutorial.BindingStage;
-using custom_compiler_tutorial.CompilationStage;
+﻿using custom_compiler_tutorial.CompilationStage;
 using custom_compiler_tutorial.LexerStage;
 using custom_compiler_tutorial.ParserStage;
 using custom_compiler_tutorial.SyntaxTreeStage;
