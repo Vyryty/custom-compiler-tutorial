@@ -55,5 +55,45 @@ namespace custom_compiler_tutorial.ParserStage
                     return SyntaxKind.IdentifierToken;
             }
         }
+
+        public static IEnumerable<SyntaxKind> GetUnaryOperatorKinds()
+        {
+            SyntaxKind[] kinds = (SyntaxKind[])Enum.GetValues(typeof(SyntaxKind));
+            foreach (SyntaxKind kind in kinds)
+            {
+                if (GetUnaryOperatorPrecedence(kind) > 0) yield return kind;
+            }
+        }
+
+        public static IEnumerable<SyntaxKind> GetBinaryOperatorKinds()
+        {
+            SyntaxKind[] kinds = (SyntaxKind[])Enum.GetValues(typeof(SyntaxKind));
+            foreach (SyntaxKind kind in kinds)
+            {
+                if (GetBinaryOperatorPrecedence(kind) > 0) yield return kind;
+            }
+        }
+
+        public static string? GetText(SyntaxKind kind)
+        {
+            return kind switch
+            {
+                SyntaxKind.PlusToken => "+",
+                SyntaxKind.MinusToken => "-",
+                SyntaxKind.StarToken => "*",
+                SyntaxKind.SlashToken => "/",
+                SyntaxKind.BangToken => "!",
+                SyntaxKind.EqualsToken => "=",
+                SyntaxKind.AmpersandAmpersandToken => "&&",
+                SyntaxKind.PipePipeToken => "||",
+                SyntaxKind.EqualsEqualsToken => "==",
+                SyntaxKind.BangEqualsToken => "!=",
+                SyntaxKind.OpenParenthesisToken => "(",
+                SyntaxKind.CloseParenthesisToken => ")",
+                SyntaxKind.FalseKeyword => "false",
+                SyntaxKind.TrueKeyword => "true",
+                _ => null,
+            };
+        }
     }
 }

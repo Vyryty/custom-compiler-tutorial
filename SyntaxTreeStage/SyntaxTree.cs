@@ -22,5 +22,17 @@ namespace custom_compiler_tutorial.SyntaxTreeStage
             Parser parser = new(text);
             return parser.Parse();
         }
+
+        public static IEnumerable<SyntaxToken> ParseTokens(string text)
+        {
+            Lexer lexer = new(text);
+            while (true)
+            {
+                SyntaxToken token = lexer.Lex();
+                if (token.Kind == SyntaxKind.EndOfFileToken) break;
+
+                yield return token;
+            }
+        }
     }
 }

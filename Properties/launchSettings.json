@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "custom-compiler-tutorial": {
+      "commandName": "Project"
+    }
+  }
+}
