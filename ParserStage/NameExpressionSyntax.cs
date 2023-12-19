@@ -8,11 +8,6 @@ namespace custom_compiler_tutorial.ParserStage
         public override string Text => IdentifierToken.Text;
         public SyntaxToken IdentifierToken { get; }
 
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            yield return IdentifierToken;
-        }
-
         public NameExpressionSyntax(SyntaxToken identifierToken)
         {
             IdentifierToken = identifierToken;

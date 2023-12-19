@@ -1,6 +1,7 @@
 ﻿using custom_compiler_tutorial.CompilationStage;
 using custom_compiler_tutorial.LexerStage;
 using custom_compiler_tutorial.ParserStage;
+using System.Collections.Immutable;
 
 namespace custom_compiler_tutorial.SyntaxTreeStage
 {
@@ -8,13 +9,13 @@ namespace custom_compiler_tutorial.SyntaxTreeStage
     {
         public ExpressionSyntax Root { get; }
         public SyntaxToken EndOfFileToken { get; }
-        public IReadOnlyList<Diagnostic> Diagnostics { get; }
+        public ImmutableArray<Diagnostic> Diagnostics { get; }
 
-        public SyntaxTree(IEnumerable<Diagnostic> diagnostics, ExpressionSyntax root, SyntaxToken endOfFileToken)
+        public SyntaxTree(ImmutableArray<Diagnostic> diagnostics, ExpressionSyntax root, SyntaxToken endOfFileToken)
         {
             Root = root;
             EndOfFileToken = endOfFileToken;
-            Diagnostics = diagnostics.ToArray();
+            Diagnostics = diagnostics;
         }
 
         public static SyntaxTree Parse(string text)

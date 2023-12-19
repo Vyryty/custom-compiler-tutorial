@@ -1,5 +1,6 @@
 ﻿using custom_compiler_tutorial.BindingStage;
 using custom_compiler_tutorial.SyntaxTreeStage;
+using System.Collections.Immutable;
 
 namespace custom_compiler_tutorial.CompilationStage
 {
@@ -17,12 +18,12 @@ namespace custom_compiler_tutorial.CompilationStage
             Binder binder = new(variables);
             BoundExpression boundExpression = binder.BindExpression(Syntax.Root);
 
-            IReadOnlyList<Diagnostic> diagnostics = Syntax.Diagnostics.Concat(binder.Diagnostics).ToArray();
+            ImmutableArray<Diagnostic> diagnostics = Syntax.Diagnostics.Concat(binder.Diagnostics).ToImmutableArray();
             if (diagnostics.Any()) return new(diagnostics, null);
 
             Evaluator evaluator = new(boundExpression, variables);
             object value = evaluator.Evaluate();
-            return new(Array.Empty<Diagnostic>(), value);
+            return new(ImmutableArray<Diagnostic>.Empty, value);
         }
     }
 }

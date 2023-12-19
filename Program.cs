@@ -39,7 +39,7 @@ namespace custom_compiler_tutorial
                 if (showTree)
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGray;
-                    PrettyPrint(syntaxTree.Root);
+                    syntaxTree.Root.WriteTo(Console.Out);
                     Console.ResetColor();
                 }
 
@@ -69,26 +69,6 @@ namespace custom_compiler_tutorial
                 }
                 else Console.WriteLine(result.Value);
             }
-        }
-
-        static void PrettyPrint(SyntaxNode node, string indent = "", bool isLast = true)
-        {
-            // Copy and paste characters for the tree
-            // ├──
-            // │  
-            // └──
-            Console.Write(indent);
-            Console.Write(isLast ? "└── " : "├── ");
-            Console.Write(node.Kind);
-            if (node is SyntaxToken t && t.Value != null)
-            {
-                Console.Write(" ");
-                Console.Write(t.Value);
-            }
-            Console.WriteLine();
-
-            SyntaxNode? lastChild = node.GetChildren().LastOrDefault();
-            foreach (SyntaxNode child in node.GetChildren()) PrettyPrint(child, indent + (isLast ? "    " : "│   "), child == lastChild);
         }
     }
 }

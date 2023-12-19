@@ -18,10 +18,5 @@ namespace custom_compiler_tutorial.ParserStage
             LiteralToken = literalToken;
             Value = value;
         }
-
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            yield return LiteralToken;
-        }
     }
 }

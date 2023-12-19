@@ -12,13 +12,6 @@ namespace custom_compiler_tutorial.ParserStage
         public SyntaxToken EqualsToken { get; }
         public ExpressionSyntax Expression { get; }
 
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            yield return IdentifierToken;
-            yield return EqualsToken;
-            yield return Expression;
-        }
-
         public AssignmentExpressionSyntax(SyntaxToken identifierToken, SyntaxToken equalsToken, ExpressionSyntax expression)
         {
             IdentifierToken = identifierToken;
